@@ -1,0 +1,27 @@
+header{
+    padding: 2em;
+}
+body{
+    position: relative;
+    background-image: url('background-image.webp');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100vh;
+    margin: 0;
+}
+.HeadText{
+    width: 25%; /* Set a width */
+    margin: 0 auto; /*  Centers the block */
+    text-align: center; /* Centers text within the block */
+    color: black;
+    background-color: rgba(255, 255, 255, 0.3); 
+    border: solid black;
+    border-bottom: none;
+    padding-left: -1em;
+    padding-right: -1em;
+}
+.Navbar{
+    border: solid black;
+    background-color: rgba(255, 255, 255, 0.3);
+}
