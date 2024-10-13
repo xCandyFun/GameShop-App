@@ -3,14 +3,29 @@ const express = require('express');
 const path = require('path');
 const app = express();
 
+const dynamodb = new DynamoDBClient( { region: 'eu-north-1' });
+const tableName = 'Games';
+
 app.use('/index', express.static(path.join(__dirname, '/WebSite/IndexPage')));
+
+app.use('/index/availableGamesPage', express.static(path.join(__dirname, '/WebSite/availableGamesPage')));
+
+app.use('/index/addGamesPage', express.static(path.join(__dirname, '/WebSite/AddGamesPage')));
 
 app.get('/', (req, res) => {
     res.redirect('/index')
 });
 
 app.get('/index', (req, res) => {
-    res.sendFile(path.join(__dirname, '/WebSite/IndexPage/index.html'));
+    res.sendFile(path.join(__dirname, '/WebSite/IndexPage/index.html')); 
+});
+
+app.get('/index/availableGamesPage', (req, res) => {
+    res.sendFile(path.join(__dirname, '/WebSite/AvailableGamesPage/showGames.html'));
+});
+
+app.get('/index/addGamesPage', (req, res) => {
+    res.sendFile(path.join(__dirname, '/WebSite/AddGamesPage/AddGames.html'));
 });
 
 app.listen(3000, () => {
