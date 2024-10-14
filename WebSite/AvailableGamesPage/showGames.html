@@ -6,18 +6,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="showGames.css">
     <title>Game-Shop</title>
+    <style scoped>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
     <header>
         <h1 class="HeadText">Game List</h1>
+        <a href="/index" class="GoBackButton"><button>Go Back</button></a>
     </header>
 
-    <div>
-        <a href="/index" class="GoBackButton"><button>Go Back</button></a>
-    </div>
+    <table>
+        <thead>
+            <tr>
+                <th>Game ID</th>
+                <th>Game Name</th>
+                <th>Studio</th>
+                <th>Genre</th>
+                <th>Year</th>
+            </tr>
+        </thead>
+        <tbody id="games-table-body">
+            <!-- Game rows will be populated here -->
+        </tbody>
+    </table>
 
-    
-    <footer>
-
-    </footer>
+    <script>
+        // Fetch the data from the Node.js backend API
+        fetch('/api/games')
+            .then(response => response.json())
+            .then(games => {
+                const tableBody = document.getElementById('games-table-body');
+                games.forEach(game => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                        <td>${game.gameId}</td>
+                        <td>${game.gameName}</td>
+                        <td>${game.studio}</td>
+                        <td>${game.genre}</td>
+                        <td>${game.year}</td>
+                    `;
+                    tableBody.appendChild(row);
+                });
+            })
+            .catch(error => console.error('Error fetching games:', error));
+    </script>
 </body>

@@ -25,3 +25,8 @@ body{
     position: fixed;
     padding-left: 2em;
 }
+
+.container{
+    position: relative;
+    padding-left: 23em;
+}
