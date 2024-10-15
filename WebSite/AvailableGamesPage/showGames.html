@@ -55,10 +55,33 @@
                         <td>${game.studio}</td>
                         <td>${game.genre}</td>
                         <td>${game.year}</td>
+                        <td><button class="delete-button" data-id="${game.gameId}">Delete</button></td>
                     `;
                     tableBody.appendChild(row);
                 });
+
+                document.querySelectorAll('.delete-button').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const gameId = this.getAttribute('data-id');
+                        deleteGame(gameId, this);
+                    });
+                });
             })
             .catch(error => console.error('Error fetching games:', error));
+
+        function deleteGame(gameId, buttonElement) {
+            fetch(`/api/games/${gameId}`, {
+                method: 'DELETE'
+            })
+            .then(response => {
+                if (response.ok) {
+                    const row = buttonElement.parentElement.parentElement;
+                    row.remove();
+                } else {
+                    alert('Failed to delete game.')
+                }
+            })
+            .catch(error => console.error('Error deleting game:', error))
+        }
     </script>
 </body>

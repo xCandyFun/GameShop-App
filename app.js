@@ -1,4 +1,4 @@
-const { DynamoDBClient, ScanCommand, PutItemCommand, GetItemCommand } = require('@aws-sdk/client-dynamodb');
+const { DynamoDBClient, ScanCommand, PutItemCommand, GetItemCommand, DeleteItemCommand } = require('@aws-sdk/client-dynamodb');
 const express = require('express');
 const path = require('path');
 const app = express();
@@ -72,6 +72,25 @@ app.post('/index/addGamesPage', async (req, res) => {
     }catch (error) {
         console.log('Error adding game:', error);
         res.status(500).send('Error adding game');
+    }
+});
+
+app.delete('/api/games/:gameId', async (req, res) => {
+    const { gameId } = req.params;
+
+    const params = {
+        TableName: tableName,
+        Key: {
+            gameId: { S: gameId }
+        }
+    };
+
+    try {
+        await dynamoDB.send(new DeleteItemCommand(params));
+        res.status(200).json({ message: 'Game delete successfully' });
+    }catch (error) {
+        console.log('Error deleting game:', error);
+        res.status(500).json({ error: 'Failed to delete game' });
     }
 });
 
