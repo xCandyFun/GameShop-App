@@ -1,0 +1,9 @@
+Resources:
+  WorkshopEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t3.micro
+      ImageId: ami-0129bfde49ddb0ed6 #AMI ID Instances ec2
+      KeyName: AmazonWS-MSP-KeyPair #My own key
+      SecurityGroupIds:
+        - sg-064f1025af40fdd71
