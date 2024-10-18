@@ -4,11 +4,10 @@ const path = require('path');
 const app = express();
 
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 const dynamoDB = new DynamoDBClient( { region: 'eu-north-1' });
 const tableName = 'Games';
-
-app.use(express.urlencoded({ extended: true }));
 
 app.use('/index', express.static(path.join(__dirname, '/WebSite/IndexPage')));
 
@@ -33,13 +32,12 @@ app.get('/api/games', async (req, res) => {
         const data = await dynamoDB.send(new ScanCommand({ TableName: tableName }));
 
         const games = data.Items.map(game => ({
-            gameId: game.gameId.S, // Check if gameId is defined
-            gameName: game.gameName.S, // Check if gameName is defined
+            gameId: game.gameId.S,
+            gameName: game.gameName.S,
             studio: game.studio.S,
             genre: game.genre.S,
             year: game.year.N
         }));
-
         res.json(games);
     } catch (error) {
         console.log('Error fetching games:', error);
@@ -53,8 +51,6 @@ app.get('/index/addGamesPage', (req, res) => {
 });
 
 app.post('/index/addGamesPage', async (req, res) => {
-    //console.log('Request Body:', req.body);
-
     try {
         const params = {
             TableName: tableName,
@@ -67,7 +63,6 @@ app.post('/index/addGamesPage', async (req, res) => {
             }
         };
         await dynamoDB.send(new PutItemCommand(params));
-        //res.redirect('/index/availableGamesPage');
         res.redirect('/index');
     }catch (error) {
         console.log('Error adding game:', error);

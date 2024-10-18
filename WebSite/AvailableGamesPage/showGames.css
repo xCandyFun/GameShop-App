@@ -25,3 +25,16 @@ body{
     position: fixed;
     padding-left: 2em;
 }
+
+table {
+    width: 50%;
+    border-collapse: collapse;
+    margin-left: 30em;
+}
+table, th, td {
+    border: 1px solid black;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+}
