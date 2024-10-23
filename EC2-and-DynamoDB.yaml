@@ -1,6 +1,30 @@
+Parameters:
+  EC2Name:
+    Description: Pick a name for EC2.
+    Type: String
+    Default: GameshopEC2Instance
+  DynamoDBName:
+    Description: Pick a name for DynamoDB.
+    Type: String
+    Default: GameshopDB
+  DeploymentRegion:
+    Description: Pick a region for EC2
+    Type: String
+    AllowedValues:
+      - eu-central-1
+      - eu-west-1
+      - eu-west-2
+      - eu-west-3
+      - eu-north-1
+    Default: eu-north-1
+
+Conditions:
+  IsDeploymentInNorthRegion: !Equals [ !Ref DeploymentRegion, "eu-north-1"]
+
 Resources:
   GameshopEC2Instance:
     Type: AWS::EC2::Instance
+    Condition: IsDeploymentInNorthRegion
     Properties:
       InstanceType: t3.micro
       ImageId: ami-0129bfde49ddb0ed6 #AMI ID Instances ec2
@@ -9,12 +33,14 @@ Resources:
         - sg-064f1025af40fdd71
       Tags:
         - Key: Name
-          Value: GameshopEC2Instance
+          Value: !Sub "${EC2Name}-${AWS::AccountId}-${DeploymentRegion}"
+
 
   GameDynamoDatabase:
     Type: AWS::DynamoDB::Table
+    Condition: IsDeploymentInNorthRegion
     Properties:
-      TableName: GameshopDB
+      TableName: !Sub "${DynamoDBName}-${AWS::AccountId}-${DeploymentRegion}"
       AttributeDefinitions:
         - AttributeName: gameId
           AttributeType: S
@@ -24,3 +50,18 @@ Resources:
       ProvisionedThroughput:
         ReadCapacityUnits: 5
         WriteCapacityUnits: 5
+
+Outputs:
+  RegionCheck:
+    Description: Validates that the correct region is selected.
+    Value: !If [ IsDeploymentInNorthRegion, "Validation passed", "Error: Only eu-north-1 is allowed as region" ]
+  ExportEC2Name:
+    Description: "Name of the created EC2"
+    Value: !Ref GameshopEC2Instance
+    Export:
+      Name: !Sub "${AWS::StackName}-GameshopEC2Instance"
+  ExportDynamoDBName:
+    Description: "Name of the created DynamoDB"
+    Value: !Ref GameDynamoDatabase
+    Export:
+      Name: !Sub "${AWS::StackName}-GameDynamoDatabase"
