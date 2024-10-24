@@ -53,7 +53,6 @@ Resources:
         - Key: Name
           Value: !Sub "${EC2Name}-${AWS::AccountId}-${DeploymentRegion}"
 
-
   GameDynamoDatabase:
     Type: AWS::DynamoDB::Table
     Condition: IsDeploymentInNorthRegion
