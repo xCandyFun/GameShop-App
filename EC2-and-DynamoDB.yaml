@@ -18,6 +18,24 @@ Parameters:
       - eu-north-1
     Default: eu-north-1
 
+Mappings:
+  AMIIDAndInstanceTypeMap:
+    eu-central-1:
+      InstanceType: t3.micro
+      MyAMI1: ami-0129bfde49ddb0ed6
+    eu-west-1:
+      InstanceType: t3.micro
+      MyAMI1: ami-0129bfde49ddb0ed6
+    eu-west-2:
+      InstanceType: t3.micro
+      MyAMI1: ami-0129bfde49ddb0ed6
+    eu-west-3:
+      InstanceType: t3.micro
+      MyAMI1: ami-0129bfde49ddb0ed6
+    eu-north-1:
+      InstanceType: t3.micro
+      MyAMI1: ami-0129bfde49ddb0ed6
+
 Conditions:
   IsDeploymentInNorthRegion: !Equals [ !Ref DeploymentRegion, "eu-north-1"]
 
@@ -26,9 +44,9 @@ Resources:
     Type: AWS::EC2::Instance
     Condition: IsDeploymentInNorthRegion
     Properties:
-      InstanceType: t3.micro
-      ImageId: ami-0129bfde49ddb0ed6 #AMI ID Instances ec2
-      KeyName: AmazonWS-MSP-KeyPair #My own key
+      InstanceType: !FindInMap [AMIIDAndInstanceTypeMap, !Ref DeploymentRegion, InstanceType]
+      ImageId: !FindInMap [AMIIDAndInstanceTypeMap, !Ref DeploymentRegion, MyAMI1]
+      KeyName: AmazonWS-MSP-KeyPair
       SecurityGroupIds:
         - sg-064f1025af40fdd71
       Tags:
