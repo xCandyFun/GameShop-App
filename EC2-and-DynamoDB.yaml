@@ -37,12 +37,17 @@ Mappings:
       MyAMI1: ami-0129bfde49ddb0ed6
 
 Conditions:
-  IsDeploymentInNorthRegion: !Equals [ !Ref DeploymentRegion, "eu-north-1"]
+  IsDeploymentInAllowedRegions: !Or
+    - !Equals [ !Ref DeploymentRegion, "eu-central-1"]
+    - !Equals [ !Ref DeploymentRegion, "eu-west-1"]
+    - !Equals [ !Ref DeploymentRegion, "eu-west-2"]
+    - !Equals [ !Ref DeploymentRegion, "eu-west-3"]
+    - !Equals [ !Ref DeploymentRegion, "eu-north-1"]
 
 Resources:
   GameshopEC2Instance:
     Type: AWS::EC2::Instance
-    Condition: IsDeploymentInNorthRegion
+    Condition: IsDeploymentInAllowedRegions
     Properties:
       InstanceType: !FindInMap [AMIIDAndInstanceTypeMap, !Ref DeploymentRegion, InstanceType]
       ImageId: !FindInMap [AMIIDAndInstanceTypeMap, !Ref DeploymentRegion, MyAMI1]
@@ -55,7 +60,7 @@ Resources:
 
   GameDynamoDatabase:
     Type: AWS::DynamoDB::Table
-    Condition: IsDeploymentInNorthRegion
+    Condition: IsDeploymentInAllowedRegions
     Properties:
       TableName: !Sub "${DynamoDBName}-${AWS::AccountId}-${DeploymentRegion}"
       AttributeDefinitions:
@@ -71,7 +76,7 @@ Resources:
 Outputs:
   RegionCheck:
     Description: Validates that the correct region is selected.
-    Value: !If [ IsDeploymentInNorthRegion, "Validation passed", "Error: Only eu-north-1 is allowed as region" ]
+    Value: !If [ IsDeploymentInAllowedRegions, "Validation passed", "Error: Only eu-north-1 is allowed as region" ]
   ExportEC2Name:
     Description: "Name of the created EC2"
     Value: !Ref GameshopEC2Instance
